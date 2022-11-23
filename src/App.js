@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import {AiOutlinePlus} from 'react-icons/ai'
 import Todo from './Todo';
-import {collection,query,onSnapshot,orderBy} from 'firebase/firestore';
+import {collection,query,onSnapshot,updateDoc,doc} from 'firebase/firestore';
 import { db } from './firebase';
 
 const style={
@@ -31,7 +31,22 @@ const App=()=>{
    },[])
 
    //Update data:
-   const toggleComplete=()=>{
+   const toggleComplete=async(todo)=>{
+      try{
+          await updateDoc(doc(db,'todos',todo.id),{
+            completed:!todo.competed,
+          })
+      }
+      catch(error){
+         console.log(error.message);
+      }
+      finally{
+        console.log('Update process ended');
+      }
+   }
+
+   //Create todo:
+   const createTodo=async()=>{
     
    }
 
