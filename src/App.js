@@ -1,7 +1,13 @@
 import React,{useState,useEffect} from 'react';
 import {AiOutlinePlus} from 'react-icons/ai'
 import Todo from './Todo';
-import {collection,query,onSnapshot,updateDoc,doc} from 'firebase/firestore';
+import {
+  collection,
+  query,
+  onSnapshot,
+  updateDoc,
+  doc,
+  addDoc} from 'firebase/firestore';
 import { db } from './firebase';
 
 const style={
@@ -16,7 +22,8 @@ const style={
 
 const App=()=>{
    const [todos,setTodos]=useState([]);
-
+   const [input,setInput]=useState('');
+   //console.log(input);
    //Read data: 
    useEffect(()=>{
     const q=query(collection(db,'todos'));
@@ -34,7 +41,7 @@ const App=()=>{
    const toggleComplete=async(todo)=>{
       try{
           await updateDoc(doc(db,'todos',todo.id),{
-            completed:!todo.competed,
+            completed:!todo.completed,
           })
       }
       catch(error){
@@ -46,17 +53,34 @@ const App=()=>{
    }
 
    //Create todo:
-   const createTodo=async()=>{
-    
+   const createTodo=async(e)=>{
+      e.preventDefault();
+      if(input===''){
+        alert('Insert a value first');
+        return;
+      }
+      try{
+         await addDoc(collection(db,'todos'),{
+          text:input,
+          completed:false,
+         })
+         setInput('');
+      }
+      catch(error){
+        console.log(error.message);
+      }
+      finally{
+        console.log('Create data process ended');
+      }
    }
 
    return (
     <div className={style.bg}>
       <div className={style.container}>
         <h3 className={style.heading}>Todo app</h3>
-        <form className={style.form}>
-          <input type="text" placeholder='Add a todo' className={style.input}/>
-          <button className={style.button}><AiOutlinePlus size={30}/></button>
+        <form className={style.form} onSubmit={createTodo}>
+          <input type="text" placeholder='Add a todo' className={style.input} value={input} onChange={(e)=>setInput(e.target.value)}/>
+          <button className={style.button} type="submit"><AiOutlinePlus size={30}/></button>
         </form>
         <ul>
           {todos.map((todo,index)=>{
@@ -69,7 +93,7 @@ const App=()=>{
             )
           })}
         </ul>
-        <p className={style.count}>You have 2 todos</p>
+        <p className={style.count}>{todos.length>0 && `You have ${todos.length} todos`}</p>
       </div>
     </div>
    )
