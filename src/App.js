@@ -1,6 +1,8 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import {AiOutlinePlus} from 'react-icons/ai'
 import Todo from './Todo';
+import {collection,query,onSnapshot,orderBy} from 'firebase/firestore';
+import { db } from './firebase';
 
 const style={
   bg:`h-screen w-screen p-4 bg-gradient-to-r from-[#2F80ED] to-[#1CBE50]`,
@@ -13,7 +15,26 @@ const style={
 }
 
 const App=()=>{
-   const [todos,setTodos]=useState(['Do something','Do another thing']);
+   const [todos,setTodos]=useState([]);
+
+   //Read data: 
+   useEffect(()=>{
+    const q=query(collection(db,'todos'));
+    const unsubscribe=onSnapshot(q,(snapShot)=>{
+      let todoArr=[];
+      snapShot.forEach((doc)=>{
+        todoArr.push({...doc.data(), id:doc.id,})
+      });
+      setTodos(todoArr);
+    })
+    return ()=>unsubscribe();
+   },[])
+
+   //Update data:
+   const toggleComplete=()=>{
+    
+   }
+
    return (
     <div className={style.bg}>
       <div className={style.container}>
@@ -28,6 +49,7 @@ const App=()=>{
               <Todo 
                  key={index}
                  todo={todo}
+                 toggleComplete={toggleComplete}
               />
             )
           })}

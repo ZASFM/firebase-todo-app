@@ -12,10 +12,10 @@ const style={
 
 const Todo=(props)=>{
    return (
-      <li className={style.li}>
+      <li className={props.todo.completed?style.liComplete:style.li}>
          <div className={style.row}>
-            <input type="checkbox"/>
-            <p className={style.text}>{props.todo}</p>
+            <input onChange={()=>props.toggleComplete(props.todo)} type="checkbox" checked={props.todo.completed?'checked':''}/>
+            <p onClick={()=>props.toggleComplete(props.todo)} className={props.todo.completed?style.textComplete:style.text}>{props.todo.text}</p>
          </div>
          <button><FaRegTrashAlt/></button>
       </li>
