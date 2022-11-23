@@ -7,7 +7,8 @@ import {
   onSnapshot,
   updateDoc,
   doc,
-  addDoc} from 'firebase/firestore';
+  addDoc,
+  deleteDoc} from 'firebase/firestore';
 import { db } from './firebase';
 
 const style={
@@ -74,6 +75,18 @@ const App=()=>{
       }
    }
 
+   //Delete a todo:
+   const deleteTodo=async(todo)=>{
+      try{
+         await deleteDoc(doc(db,'todos',todo.id))
+      }
+      catch(error){
+        console.log(error.message);
+      }
+      finally{
+        console.log('Delete process ended');
+      }
+   }
    return (
     <div className={style.bg}>
       <div className={style.container}>
@@ -89,6 +102,7 @@ const App=()=>{
                  key={index}
                  todo={todo}
                  toggleComplete={toggleComplete}
+                 deleteTodo={deleteTodo}
               />
             )
           })}

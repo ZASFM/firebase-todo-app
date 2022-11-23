@@ -17,7 +17,7 @@ const Todo=(props)=>{
             <input onChange={()=>props.toggleComplete(props.todo)} type="checkbox" checked={props.todo.completed?'checked':''}/>
             <p onClick={()=>props.toggleComplete(props.todo)} className={props.todo.completed?style.textComplete:style.text}>{props.todo.text}</p>
          </div>
-         <button><FaRegTrashAlt/></button>
+         <button onClick={()=>props.deleteTodo(props.todo)}><FaRegTrashAlt/></button>
       </li>
    )
 }
